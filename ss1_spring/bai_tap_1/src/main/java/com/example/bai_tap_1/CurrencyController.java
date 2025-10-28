@@ -21,6 +21,5 @@ public class CurrencyController {
         model.addAttribute("rate", rate);
         return "result";
     }
-
 }
 
