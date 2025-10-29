@@ -33,4 +33,14 @@ public class EmailSetting {
     public void setSignature(String signature) {
         this.signature = signature;
     }
+
+    public EmailSetting(String language, int pageSize, boolean spamsFilter, String signature) {
+        this.language = language;
+        this.pageSize = pageSize;
+        this.spamsFilter = spamsFilter;
+        this.signature = signature;
+    }
+
+    public EmailSetting() {
+    }
 }

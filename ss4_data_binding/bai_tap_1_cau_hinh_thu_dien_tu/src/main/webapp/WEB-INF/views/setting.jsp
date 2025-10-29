@@ -4,7 +4,7 @@
 <body>
 <h2>Settings</h2>
 
-<form:form modelAttribute="emailSetting" action="update" method="post">
+<form:form modelAttribute="setting" action="/setting/update" method="post">
     <p>
         <label>Languages:</label>
         <form:select path="language" items="${languages}" />
