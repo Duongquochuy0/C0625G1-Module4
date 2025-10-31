@@ -28,7 +28,7 @@ public class ProductRepository implements IProductRepository {
     @Transactional
     public boolean save(Product product) {
         try {
-            if (product.getId() == 0) {
+            if (product.getId() == 0 || entityManager.find(Product.class, product.getId()) == null) {
                 entityManager.persist(product);
             } else {
                 entityManager.merge(product);
@@ -39,6 +39,7 @@ public class ProductRepository implements IProductRepository {
             return false;
         }
     }
+
 
 
 

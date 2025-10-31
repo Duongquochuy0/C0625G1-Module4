@@ -10,6 +10,7 @@
 <h2 th:text="${product.id != null} ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'"></h2>
 
 <form th:action="@{/products/save}" th:object="${product}" method="post" class="mt-3">
+    <input type="hidden" th:field="*{id}" />
 
     <div class="mb-3">
         <label class="form-label">Tên sản phẩm:</label>
