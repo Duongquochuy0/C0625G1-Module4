@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/setting")
 public class EmailController {
     private final IEmailService emailService;
-
     public EmailController(IEmailService emailService) {
         this.emailService = emailService;
     }

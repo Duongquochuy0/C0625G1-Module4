@@ -8,6 +8,6 @@
 <p><strong>Spams filter:</strong> ${setting.spamsFilter ? "Enabled" : "Disabled"}</p>
 <p><strong>Signature:</strong><br/> <pre>${setting.signature}</pre></p>
 
-<a href="/settings">Back to settings</a>
+<a href="/setting">Back to settings</a>
 </body>
 </html>

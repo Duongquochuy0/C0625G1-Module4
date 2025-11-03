@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 public class EmailService implements IEmailService {
 
     private final IEmailRepository emailRepository;
-
     @Autowired
     public EmailService(IEmailRepository emailRepository) {
         this.emailRepository = emailRepository;

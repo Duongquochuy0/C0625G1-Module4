@@ -1,4 +1,4 @@
-package com.example.quan_ly_san_pham.config;
+package com.example.blog.config;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -26,6 +26,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -94,7 +95,7 @@ public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAwa
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("com.example.quan_ly_san_pham.entity");
+        em.setPackagesToScan("com.example.blog.entity");
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(additionalProperties());
@@ -105,7 +106,7 @@ public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAwa
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/product_jpa?createDatabaseIfNotExist=true&useSSL=false");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/blog?createDatabaseIfNotExist=true&useSSL=false");
         dataSource.setUsername("root");
         dataSource.setPassword("codegym");
         return dataSource;
