@@ -6,20 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Blog {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String title;
-    @Column(columnDefinition = "TEXT")
-    private String content;
-    private String author;
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    private String name;
+    @OneToMany(mappedBy = "category")
+    private List<Blog> blogList;
+
 }

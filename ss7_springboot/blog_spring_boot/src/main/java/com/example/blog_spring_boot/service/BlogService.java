@@ -2,6 +2,8 @@ package com.example.blog_spring_boot.service;
 
 import com.example.blog_spring_boot.entity.Blog;
 import com.example.blog_spring_boot.repository.IBlogRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +34,20 @@ public class BlogService implements IBlogService {
     }
 
     @Override
+    public List<Blog> findByCategoryId(Integer categoryId) {
+        return blogRepository.findByCategoryId(categoryId);
+    }
+
+    @Override
     public List<Blog> findByTitleContaining(String keyword) {
         return blogRepository.findByTitleContaining(keyword);
     }
+
+    @Override
+    public Page<Blog> searchByTitleAndCategory(String title, Integer categoryId, Pageable pageable) {
+        return blogRepository.searchByTitleAndCategory(title, categoryId, pageable);
+    }
+
+
+
 }
