@@ -5,10 +5,12 @@ import com.example.demo.entity.User;
 import com.example.demo.service.IUserService;
 import com.example.demo.validate.UserValidate;
 import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/form")
@@ -27,22 +29,25 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public String addUser(@Valid @ModelAttribute("userDto") UserDto userDto,
-                          BindingResult bindingResult) {
-        UserValidate userValidate= new UserValidate();
+    public String result(@Valid @ModelAttribute UserDto userDto,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
+        UserValidate userValidate = new UserValidate();
         userValidate.validate(userDto, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "user/form";
         }
         User user = new User();
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setAge(userDto.getAge());
-        user.setEmail(userDto.getEmail());
-
-        userService.addUser(user);
-
+        BeanUtils.copyProperties(userDto, user);
+        String mess = "Sign up success";
+        try {
+            userService.addUser(user);
+        } catch (Exception e) {
+            mess = "Sign up fail!";
+        }
+        redirectAttributes.addFlashAttribute("mess", mess);
         return "user/result";
     }
+
 }

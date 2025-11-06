@@ -9,11 +9,9 @@ public class UserValidate implements Validator {
     public boolean supports(Class<?> clazz) {
         return false;
     }
-
     @Override
     public void validate(Object target, Errors errors) {
         UserDto userDto = (UserDto) target;
-
         String firstName  = userDto.getFirstName();
         if (firstName == null || firstName.trim().isEmpty()) {
             errors.rejectValue("firstName", "firstName.empty", "Firstname không được để trống");
@@ -43,5 +41,4 @@ public class UserValidate implements Validator {
             errors.rejectValue("age", "age.invalid", "Tuổi phải >= 18");
         }
     }
-
 }
