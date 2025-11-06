@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.service.IUserService;
+import com.example.demo.validate.UserValidate;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +29,8 @@ public class UserController {
     @PostMapping("/add")
     public String addUser(@Valid @ModelAttribute("userDto") UserDto userDto,
                           BindingResult bindingResult) {
-
+        UserValidate userValidate= new UserValidate();
+        userValidate.validate(userDto, bindingResult);
         if (bindingResult.hasErrors()) {
             return "user/form";
         }
