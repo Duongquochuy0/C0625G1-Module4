@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sản phẩm</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 25px 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Grid */
+        .product-grid {
+            width: 90%;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* ✅ 4 cột */
+            gap: 25px;
+        }
+
+
+        /* Card */
+        .product-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            transition: 0.25s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+            transform: translateY(-5px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .product-card h3 {
+            font-size: 17px;
+            color: #222;
+            margin: 8px 0;
+            font-weight: 600;
+        }
+
+        .price {
+            font-size: 16px;
+            color: #e53935;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .qty {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 14px;
+        }
+
+        .btn {
+            width: 100%;
+            display: block;
+            text-align: center;
+            padding: 10px 0;
+            background-color: #ff5722;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 6px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #e64a19;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .pagination a {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 2px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .pagination a.active {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+        }
+        /* Navbar giỏ hàng cố định bên phải */
+        .cart-navbar {
+            position: fixed;
+            top: 50%;
+            right: 25px;
+            background-color: #ff5722;
+            color: #fff;
+            padding: 14px 18px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-navbar:hover {
+            background-color: #e64a19;
+            transform: scale(1.1);
+        }
+
+        /* Hiển thị số lượng sản phẩm trong giỏ */
+        .cart-count {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background-color: white;
+            color: #ff5722;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+        /* NAVBAR */
+        .navbar {
+            width: 100%;
+            background: #ff5722;
+            color: white;
+            padding: 14px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        /* Logo */
+        .navbar .logo a {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Menu */
+        .navbar .menu a {
+            margin: 0 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .navbar .menu a:hover {
+            opacity: 0.8;
+        }
+
+        /* Cart Icon in Navbar */
+        .cart-btn {
+            position: relative;
+            text-decoration: none;
+            color: white;
+            font-size: 22px;
+        }
+
+        /* Cart Count */
+        .cart-btn .cart-count {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: white;
+            color: #ff5722;
+            padding: 3px 6px;
+            font-size: 12px;
+            border-radius: 50%;
+        }
+
+        /* Đẩy nội dung xuống dưới Navbar */
+        body {
+            padding-top: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .product-grid { grid-template-columns: 1fr; }
+        }
+
+    </style>
+</head>
+
+<body>
+<header class="navbar">
+    <div class="logo">
+        <a th:href="@{/shop}">HuyStore</a>
+    </div>
+
+    <nav class="menu">
+        <a th:href="@{/shop}">Sản phẩm</a>
+        <a th:href="@{/about}">Giới thiệu</a>
+        <a th:href="@{/contact}">Liên hệ</a>
+    </nav>
+
+    <a th:href="@{/shopping-cart}" class="cart-btn">
+        🛒
+        <span class="cart-count" th:text="${cart.countProductQuantity()}">0</span>
+    </a>
+
+</header>
+
+
+<div class="product-grid">
+    <div class="product-card" th:each="product : ${productPage.content}">
+        <img th:src="@{'/img/' + ${product.image}}" alt="Hình sản phẩm"/>
+
+        <h3 th:text="${product.name}"></h3>
+        <p class="price" th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')} + '₫'"></p>
+        <p class="qty">Số lượng: <span th:text="${product.quantity}"></span></p>
+
+        <a th:href="@{'/shop/detail/' + ${product.id}}" class="btn">Xem chi tiết</a>
+        <a th:href="@{'/shop/add/' + ${product.id} + '?action=add'}" class="btn">Thêm vào giỏ</a>
+    </div>
+</div>
+
+<div class="pagination">
+    <a th:if="${currentPage > 0}"
+       th:href="@{/shop(page=${currentPage - 1})}">«</a>
+
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/shop(page=${i})}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage} ? 'active' : ''"></a>
+    </span>
+
+    <a th:if="${currentPage < totalPages - 1}"
+       th:href="@{/shop(page=${currentPage + 1})}">»</a>
+</div>
+
+
+</body>
+</html>
