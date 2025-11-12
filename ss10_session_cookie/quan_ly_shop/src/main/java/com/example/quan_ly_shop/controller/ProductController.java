@@ -34,8 +34,6 @@ public class ProductController {
             return "redirect:/shop";
         }
         cart.addProduct(product);
-
-        // Debug output
         System.out.println("addToCart: added product id=" + id + " name=" + product.getName());
         System.out.println("Cart now has item count (entries): " + cart.countItemQuantity());
         System.out.println("Cart total quantity: " + cart.countProductQuantity());
@@ -79,6 +77,4 @@ public class ProductController {
         model.addAttribute("product", product);
         return "product/detail";
     }
-
-
 }
