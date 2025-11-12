@@ -4,6 +4,9 @@ import com.example.blog_spring_boot.entity.Blog;
 import com.example.blog_spring_boot.entity.Category;
 import com.example.blog_spring_boot.service.IBlogService;
 import com.example.blog_spring_boot.service.ICategoryService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +28,28 @@ public class RestBlogController {
     }
 
 
+//    @GetMapping
+//    public ResponseEntity<List<Blog>> getAll() {
+//        List<Blog> blogList = blogService.findAll();
+//        if (blogList.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(blogList, HttpStatus.OK);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<Blog>> getAll() {
-        List<Blog> blogList = blogService.findAll();
-        if (blogList.isEmpty()) {
+    public ResponseEntity<List<Blog>> getAll(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Blog> result = blogService.searchByTitleAndCategory(title, categoryId, pageable);
+        if (result.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(blogList, HttpStatus.OK);
+        return new ResponseEntity<>(result.getContent(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

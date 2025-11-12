@@ -8,6 +8,7 @@
 
 <body>
 <h1>Danh sách Blog</h1>
+
 <div>
   <input id="title" placeholder="Nhập tiêu đề"><br>
   <input id="author" placeholder="Nhập tác giả"><br>
@@ -37,71 +38,60 @@
 
 <script>
   $(document).ready(function () {
+    let currentPage = 0;
     const pageSize = 5;
-    let blogs = [];
-    let currentIndex = 0;
+    let hasMore = true;
     function loadCategories() {
       $.ajax({
         url: "http://localhost:8080/v1/api/blogs/categories",
         method: "get",
-        dataType: "json",
         success: function (data) {
-          if (data && data.length) {
-            let options = '<option value="">------ Chọn thể loại ------</option>';
-            data.forEach(cat => {
-              options += `<option value="${cat.id}">${cat.name}</option>`;
-            });
-            $("#categoryId").html(options);
-          }
+          let options = '<option value="">------ Chọn thể loại ------</option>';
+          data.forEach(cat => {
+            options += `<option value="${cat.id}">${cat.name}</option>`;
+          });
+          $("#categoryId").html(options);
         },
         error: function (xhr) {
-          console.log("Lỗi tải danh mục:", xhr.status);
+          console.error("Lỗi tải danh mục:", xhr.status);
         }
       });
     }
-
-    loadCategories();
-    function loadBlogs() {
+    function loadBlogs(page) {
       $.ajax({
-        url: "http://localhost:8080/v1/api/blogs",
+        url: `http://localhost:8080/v1/api/blogs?page=${page}&size=${pageSize}`,
         method: "get",
-        dataType: "json",
         success: function (data) {
-          blogs = data || [];
-          currentIndex = 0;
-          $("#content").html('');
-          loadMore();
+          if (!data || data.length === 0) {
+            hasMore = false;
+            $("#btn-more").hide();
+            return;
+          }
+
+          data.forEach((blog, i) => {
+            $("#content").append(`
+              <tr>
+                <td>${page * pageSize + i + 1}</td>
+                <td>${blog.id}</td>
+                <td>${blog.title}</td>
+                <td>${blog.author}</td>
+                <td>${blog.category ? blog.category.name : ''}</td>
+              </tr>
+            `);
+          });
+
+          currentPage++;
         },
         error: function (xhr) {
           alert("Lỗi khi tải danh sách blog: " + xhr.status);
         }
       });
     }
-    function loadMore() {
-      const nextIndex = currentIndex + pageSize;
-      const slice = blogs.slice(currentIndex, nextIndex);
-
-      slice.forEach((blog, i) => {
-        $("#content").append(`
-                <tr>
-                    <td>${currentIndex + i + 1}</td>
-                    <td>${blog.id}</td>
-                    <td>${blog.title}</td>
-                    <td>${blog.author}</td>
-                    <td>${blog.category ? blog.category.name : ''}</td>
-                </tr>
-            `);
-      });
-
-      currentIndex = nextIndex;
-      if (currentIndex >= blogs.length) {
-        $("#btn-more").hide();
-      } else {
-        $("#btn-more").show();
+    $("#btn-more").click(function () {
+      if (hasMore) {
+        loadBlogs(currentPage);
       }
-    }
-
-    $("#btn-more").click(loadMore);
+    });
     $("#btn-save").click(function () {
       let title = $("#title").val().trim();
       let author = $("#author").val().trim();
@@ -123,15 +113,18 @@
           $("#title").val('');
           $("#author").val('');
           $("#categoryId").val('');
-          loadBlogs();
+          $("#content").empty();
+          currentPage = 0;
+          hasMore = true;
+          loadBlogs(0);
         },
         error: function (xhr) {
           alert("Lỗi khi thêm blog: " + xhr.status);
         }
       });
     });
-
-    loadBlogs();
+    loadCategories();
+    loadBlogs(0);
   });
 </script>
 </body>
