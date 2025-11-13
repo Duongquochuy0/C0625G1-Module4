@@ -1,0 +1,30 @@
+package com.example.blog_spring_boot.entity;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Blog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    private String author;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+}

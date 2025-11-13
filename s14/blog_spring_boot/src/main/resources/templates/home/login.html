@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập / Đăng ký</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; font-family: "Segoe UI", sans-serif; }
+        .card { border-radius: 15px; padding: 30px; box-shadow: 0 6px 15px rgba(0,0,0,0.1);}
+        .nav-tabs .nav-link.active { background-color: #0d6efd; color: white; }
+        .nav-tabs .nav-link { color: #0d6efd; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center" style="height:100vh;">
+    <div class="card col-md-6">
+        <ul class="nav nav-tabs mb-4" id="authTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Đăng nhập</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button">Đăng ký</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="authTabContent">
+            <!-- LOGIN -->
+            <div class="tab-pane fade show active" id="login">
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${loginError}" class="alert alert-danger" th:text="${loginError}"></div>
+
+                <form th:action="@{/process-login}" method="post" autocomplete="off">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="username" name="username" autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+                </form>
+            </div>
+
+            <!-- REGISTER -->
+            <div class="tab-pane fade" id="register">
+                <form th:action="@{/register}" th:object="${user}" method="post" autocomplete="off">
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="userName" th:field="*{userName}" autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordReg" class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="passwordReg" th:field="*{encryptedPassword}" autocomplete="new-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Nếu có success message, bật tab login
+        const successMsg = document.querySelector(".alert-success");
+        if(successMsg) {
+            const loginTab = new bootstrap.Tab(document.querySelector('#login-tab'));
+            loginTab.show();
+        }
+
+        // Xóa giá trị input khi load
+        document.getElementById("username").value = '';
+        document.getElementById("password").value = '';
+        document.getElementById("userName").value = '';
+        document.getElementById("passwordReg").value = '';
+    });
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener("DOMContentLoaded", function() {
+        const showRegisterTab = [[${showRegisterTab}]] ? true : false;
+        if (showRegisterTab) {
+            const registerTab = new bootstrap.Tab(document.querySelector('#register-tab'));
+            registerTab.show(); // bật tab đăng ký
+        }
+    });
+    /*]]>*/
+</script>
+
+
+
+</body>
+</html>
