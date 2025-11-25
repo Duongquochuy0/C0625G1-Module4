@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Usage</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: auto;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #eee;
+        }
+        a.button {
+            text-decoration: none;
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 3px;
+        }
+        a.button.red { background-color: #e74c3c; }
+        a.button.green { background-color: #2ecc71; }
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+            padding: 5px 10px;
+            border: 1px solid #333;
+            border-radius: 3px;
+        }
+        .pagination a.active {
+            font-weight: bold;
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h2 style="text-align: center;">Danh sách Usage</h2>
+
+<div style="width: 80%; margin: auto; margin-bottom: 20px;">
+    <a th:href="@{/usage/add}" class="button green">Thêm mới</a>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên người dùng</th>
+        <th>Mã máy</th>
+        <th>Thời gian bắt đầu</th>
+        <th>Thời gian kết thúc</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="usage : ${usagePage.content}">
+        <td th:text="${usage.id}"></td>
+        <td th:text="${usage.userName}"></td>
+        <td th:text="${usage.computer.id}"></td>
+        <td th:text="${usage.startTime != null ? #temporals.format(usage.startTime, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+        <td th:text="${usage.endTime != null ? #temporals.format(usage.endTime, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+        <td th:text="${usage.endTime == null ? 'Đang sử dụng' : 'Đã kết thúc'}"></td>
+        <td>
+            <a th:if="${usage.endTime == null}" th:href="@{'/usage/finish/' + ${usage.id}}" class="button green">Kết thúc</a>
+            <a th:href="@{'/usage/delete/' + ${usage.id}}" class="button red">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div class="pagination" style="width: 80%; margin: auto; margin-top: 20px; text-align: center;">
+    <a th:each="i : ${#numbers.sequence(0, usagePage.totalPages - 1)}"
+       th:href="@{|/usage?page=${i}|}"
+       th:text="${i + 1}"
+       th:classappend="${i == usagePage.number} ? 'active' : ''"></a>
+</div>
+
+</body>
+</html>
